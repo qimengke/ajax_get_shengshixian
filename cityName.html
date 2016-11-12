@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="Ajax.js"></script>
+    <script type="text/javascript">
+
+        function county(_p,_data){
+            var _county=document.getElementById("county");
+            var _options="";
+            for(var i=0;i<_data["regions"][_p]["regions"].length;i++){
+                /*console.log(_data["regions"][_p]["regions"][i]["regions"][0])*/
+                for(var j=0;j<_data["regions"][_p]["regions"][i]["regions"].length;j++){
+                    _options += "<option>" + _data["regions"][_p]["regions"][i]["regions"][j]["name"] + "</option>"
+             }
+                
+            }
+            
+            _county.innerHTML=_options;
+        }
+
+
+           
+
+       
+        function city(_p,_data){
+            var _city=document.getElementById("city");
+            var _options="";
+            for(var i=0;i<_data["regions"][_p]["regions"].length;i++){
+                _options += "<option>" + _data["regions"][_p]["regions"][i]["name"] + "</option>"
+            }
+            _city.innerHTML=_options;
+        }
+
+
+
+        function obtainProvince(){
+            ajaxRequest("get","cityName.json",null,function(data){
+                var _data=window.eval("("+data+")");
+               // console.log(_data);
+                var _province=document.getElementById("province");
+                var _options="";
+                for(var i=0;i<_data["regions"].length;i++){
+                    _options += "<option>" + _data["regions"][i]["name"] + "</option>"
+                }
+                _province.innerHTML=_options;
+                _province.onchange=function(){
+                    var _p=-1;
+                    for(var i=0;i<this.children.length;i++){
+                        if(this.children[i].selected){
+                            _p=i;
+                            break;
+                        }
+                    }
+                    city(_p,_data);
+                    county(_p,_data);
+                   
+                }
+            },true);
+        }
+        window.onload=function(){
+            obtainProvince();
+           
+        }
+    </script>
+</head>
+<body>
+<select name="province" id="province"></select>
+<select name="city" id="city"></select>
+<select name="county" id="county"></select>
+</body>
+</html>
